@@ -46,9 +46,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     
     try {
       if (isLogin) {
-        // Handle login
+        // Handle login - using email instead of username for SignInWithPasswordCredentials
         const { data, error } = await supabase.auth.signInWithPassword({
-          username: formData.username,
+          email: formData.email, // Changed from username to email
           password: formData.password,
         });
         
@@ -134,42 +134,42 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           </>
         )}
         
-        <div className="space-y-2">
-          <Label htmlFor="username">Username</Label>
-          <div className="relative">
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-              <User className="h-5 w-5" />
-            </div>
-            <Input 
-              id="username" 
-              placeholder="Enter your username" 
-              className="pl-10" 
-              required
-              value={formData.username}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        
         {!isLogin && (
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="username">Username</Label>
             <div className="relative">
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                <Mail className="h-5 w-5" />
+                <User className="h-5 w-5" />
               </div>
               <Input 
-                id="email" 
-                type="email" 
-                placeholder="Enter your email" 
+                id="username" 
+                placeholder="Enter your username" 
                 className="pl-10" 
                 required
-                value={formData.email}
+                value={formData.username}
                 onChange={handleChange}
               />
             </div>
           </div>
         )}
+        
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <div className="relative">
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+              <Mail className="h-5 w-5" />
+            </div>
+            <Input 
+              id="email" 
+              type="email" 
+              placeholder="Enter your email" 
+              className="pl-10" 
+              required
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
         
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
