@@ -12,7 +12,7 @@ const features = [
   {
     icon: <Activity className="h-8 w-8 text-primary" />,
     title: 'BMR Calculation',
-    description: 'Determine your Basal Metabolic Rate to understand your body's energy requirements at rest.',
+    description: 'Determine your Basal Metabolic Rate to understand your body\'s energy requirements at rest.',
   },
   {
     icon: <BarChart4 className="h-8 w-8 text-primary" />,
