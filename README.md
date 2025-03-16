@@ -1,69 +1,83 @@
-# Welcome to your Lovable project
+# NutriScan - Indian Dish Nutrition Analyzer 🍛📸
 
-## Project info
+NutriScan is an AI-powered web application that allows users to upload images of dishes and receive their nutritional values per 100g. It primarily focuses on Indian cuisine but can recognize other dishes as well.ALos it calculates your BMI and also the BMR along with which it also consists of Meal Planner.
 
-**URL**: https://lovable.dev/projects/3ccfbec5-41e0-4d64-8f59-3fad9d6a772c
+## 🚀 Features
+- 📷 Upload an image of a dish
+- 🔍 AI-based dish recognition using Google Gemini API
+- 📊 Detailed nutritional information (calories, macronutrients, vitamins, and minerals)
+- 📝 Meal Planner
+- 🏋️ Calcualtes BMI and BMR and suggests amount of calories to be consumed on daily basis.
+- 🎨 Beautiful and responsive UI
+- ⚡ Fast and efficient processing
 
-## How can I edit this code?
+## 🛠️ Tech Stack
+- **Frontend:** React, Tailwind CSS
+- **Backend:** Node.js, Express
+- **Database:** Supabase
+- **AI API:** Google Gemini AI
 
-There are several ways of editing your application.
 
-**Use Lovable**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/3ccfbec5-41e0-4d64-8f59-3fad9d6a772c) and start prompting.
+## 🔧 Installation & Setup
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
+### 1️⃣ Clone the Repository
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone https://github.com/your-username/health-buddy.git
+cd health-buddy
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 2️⃣ Setup Backend
+```sh
+cd backend
+npm install
+```
+#### Configure Environment Variables
+Create a `.env` file in the `backend/` folder and add:
+```
+PORT=5000
+GEMINI_API_KEY=your-google-gemini-api-key
+```
+#### Start Backend Server
+```sh
+npm start
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### 3️⃣ Setup Frontend
+```sh
+cd ..
+npm install
+```
+#### Start Frontend
+```sh
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### 4️⃣ Start Both Servers Simultaneously
+Instead of running frontend and backend in separate terminals, use:
+**Run backend code in terminal and frontend in the other (total 2 terminals simultaneosly working)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
+## 🖼️ Usage
+1. Upload an image of a dish.
+2. The app will analyze and identify the dish.
+3. Get detailed nutritional values per 100g.
+4. Calculate BMI and BMR
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🛠️ Future Improvements
+- ✅ Authentication for user profiles
+- ✅ History of analyzed dishes
+- ✅ Multi-language support
+- ✅ More accurate dish recognition
 
-## What technologies are used for this project?
+---
 
-This project is built with .
+## 🤝 Contributing
+Want to contribute? Feel free to fork and submit a pull request! 🚀
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/3ccfbec5-41e0-4d64-8f59-3fad9d6a772c) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+## 📜 License
+This project is open-source under the **MIT License**.
