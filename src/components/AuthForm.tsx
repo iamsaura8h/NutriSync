@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -77,11 +78,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         
         toast({
           title: "Registration successful",
-          description: "Your account has been created successfully!",
+          description: `Welcome, ${formData.name}!`,
         });
         
-        // If email confirmation is enabled, show a message
-        // Otherwise, directly navigate to home
+        // Always navigate to home after successful signup
         navigate('/');
       }
     } catch (error: any) {
