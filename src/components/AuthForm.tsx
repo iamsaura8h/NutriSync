@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -46,9 +47,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     
     try {
       if (isLogin) {
-        // Handle login - using email for SignInWithPassword
+        // Handle login using username from metadata and email constructed from username
+        const email = `${formData.username.toLowerCase()}@example.com`;
+        
         const { data, error } = await supabase.auth.signInWithPassword({
-          email: formData.email,
+          email: email, // Using constructed email based on username
           password: formData.password,
         });
         
@@ -61,9 +64,12 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         
         navigate('/');
       } else {
-        // Handle registration
+        // For registration, construct an email from the username
+        const email = `${formData.username.toLowerCase()}@example.com`;
+        
+        // Handle registration with constructed email
         const { data, error } = await supabase.auth.signUp({
-          email: formData.email,
+          email: email,
           password: formData.password,
           options: {
             data: {
@@ -75,11 +81,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         
         if (error) throw error;
         
-        // Check if email confirmation is required
+        // Check if user already exists
         if (data?.user?.identities?.length === 0) {
           toast({
             title: "Account already exists",
-            description: "Please log in with this email instead",
+            description: "Please log in with this username instead",
             variant: "destructive"
           });
           navigate('/login');
@@ -99,10 +105,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
       
       // Provide more user-friendly error messages
       const errorMessage = 
-        error.message === "Email not confirmed" 
-          ? "Please verify your email before logging in" 
-          : error.message === "Invalid login credentials"
-          ? "The email or password you entered is incorrect"
+        error.message === "Invalid login credentials"
+          ? "The username or password you entered is incorrect"
           : error.message || "An error occurred during authentication";
       
       toast({
@@ -154,38 +158,18 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           </>
         )}
         
-        {!isLogin && (
-          <div className="space-y-2">
-            <Label htmlFor="username">Username</Label>
-            <div className="relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                <User className="h-5 w-5" />
-              </div>
-              <Input 
-                id="username" 
-                placeholder="Enter your username" 
-                className="pl-10" 
-                required
-                value={formData.username}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-        )}
-        
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="username">Username</Label>
           <div className="relative">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-              <Mail className="h-5 w-5" />
+              <User className="h-5 w-5" />
             </div>
             <Input 
-              id="email" 
-              type="email" 
-              placeholder="Enter your email" 
+              id="username" 
+              placeholder="Enter your username" 
               className="pl-10" 
               required
-              value={formData.email}
+              value={formData.username}
               onChange={handleChange}
             />
           </div>
