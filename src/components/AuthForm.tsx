@@ -1,18 +1,28 @@
-
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Lock, Mail, User } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/components/ui/use-toast';
 
 interface AuthFormProps {
   type: 'login' | 'register';
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    username: '',
+    email: '',
+    password: '',
+  });
   
   const isLogin = type === 'login';
   const title = isLogin ? 'Log In' : 'Create an Account';
@@ -23,9 +33,66 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const toggleLink = isLogin ? '/register' : '/login';
   const toggleLinkText = isLogin ? 'Sign Up' : 'Log In';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`This is a preview. ${title} functionality will be implemented with Supabase.`);
+    setLoading(true);
+    
+    try {
+      if (isLogin) {
+        // Handle login
+        const { data, error } = await supabase.auth.signInWithPassword({
+          username: formData.username,
+          password: formData.password,
+        });
+        
+        if (error) throw error;
+        
+        toast({
+          title: "Login successful",
+          description: "Welcome back!",
+        });
+        
+        navigate('/');
+      } else {
+        // Handle registration
+        const { data, error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            data: {
+              full_name: formData.name,
+              username: formData.username,
+            }
+          }
+        });
+        
+        if (error) throw error;
+        
+        toast({
+          title: "Registration successful",
+          description: "Your account has been created successfully!",
+        });
+        
+        // If email confirmation is enabled, show a message
+        // Otherwise, directly navigate to home
+        navigate('/');
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "An error occurred during authentication",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -59,6 +126,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                   placeholder="Enter your name" 
                   className="pl-10" 
                   required
+                  value={formData.name}
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -76,6 +145,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
               placeholder="Enter your username" 
               className="pl-10" 
               required
+              value={formData.username}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -93,6 +164,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                 placeholder="Enter your email" 
                 className="pl-10" 
                 required
+                value={formData.email}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -110,6 +183,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
               placeholder="Enter your password" 
               className="pl-10 pr-10" 
               required
+              value={formData.password}
+              onChange={handleChange}
             />
             <button 
               type="button"
@@ -132,8 +207,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           </div>
         )}
         
-        <Button type="submit" className="w-full">
-          {buttonText}
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? 'Processing...' : buttonText}
         </Button>
         
         <div className="text-center text-sm text-muted-foreground">
@@ -143,12 +218,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           </Link>
         </div>
       </form>
-      
-      <div className="mt-8 pt-6 border-t border-border">
-        <p className="text-xs text-center text-muted-foreground">
-          Note: This is a preview UI. Authentication will be implemented with Supabase.
-        </p>
-      </div>
     </motion.div>
   );
 };
