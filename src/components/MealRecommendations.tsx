@@ -1,70 +1,202 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { useHealth } from '@/contexts/HealthContext';
-import { Utensils, Coffee, Sun, Moon } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Carrot, Coffee, Salad, Utensils, Sun, Moon } from 'lucide-react';
 
-// Sample meal recommendations by calorie range
-// This will be replaced with API data in the future
-const getMealSuggestions = (calories: number) => {
-  if (calories < 1600) {
-    return {
-      breakfast: 'Vegetable omelette (2 eggs) with a small whole wheat toast and herbal tea',
-      lunch: 'Dal soup with a small bowl of rice and green vegetable salad',
-      dinner: 'Grilled fish (100g) with steamed vegetables and a small serving of brown rice',
-      snacks: 'Apple slices with a teaspoon of peanut butter, Green tea',
-    };
-  } else if (calories < 2200) {
-    return {
-      breakfast: 'Oatmeal with banana, almonds, and a teaspoon of honey, Glass of milk',
-      lunch: 'Chicken curry (150g) with 1 cup rice and vegetable salad',
-      dinner: 'Paneer bhurji (150g) with 2 chapatis and mixed vegetables',
-      snacks: 'Greek yogurt with berries, Handful of mixed nuts',
-    };
-  } else {
-    return {
-      breakfast: 'Masala dosa with sambar, side of fruit, and a glass of banana smoothie',
-      lunch: 'Chicken biryani (1 cup) with raita and vegetable curry',
-      dinner: 'Paneer butter masala with 3 chapatis and vegetable pulao',
-      snacks: 'Protein shake with banana and peanut butter, Dates with milk',
-    };
-  }
-};
+type Goal = 'loss' | 'maintenance' | 'gain';
 
-const MealCard: React.FC<{ title: string; description: string; icon: React.ReactNode; delay: number }> = ({
-  title,
-  description,
-  icon,
-  delay,
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.3, delay }}
-    className="bg-background rounded-xl p-5 shadow-sm"
-  >
-    <div className="flex items-start space-x-4">
-      <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-        {icon}
+interface MealRecommendationsProps {
+  calories: number;
+  goal: Goal;
+}
+
+const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories, goal }) => {
+  // Get meal plan based on calorie needs and goal
+  const getMealPlan = () => {
+    if (goal === 'loss') {
+      return {
+        title: 'Weight Loss Meal Plan',
+        description: 'Lower carb, higher protein diet with focus on whole foods',
+        meals: [
+          {
+            name: 'Breakfast',
+            icon: <Coffee className="h-5 w-5 text-primary" />,
+            items: [
+              '1 bowl Moong Dal Chilla with mint chutney',
+              '1 cup green tea or black coffee',
+              '1/2 cup low-fat yogurt'
+            ],
+            delay: 0.1
+          },
+          {
+            name: 'Lunch',
+            icon: <Sun className="h-5 w-5 text-primary" />,
+            items: [
+              '1 bowl mixed vegetable dal',
+              '2 multigrain rotis',
+              '1 bowl cucumber raita',
+              '1 bowl vegetable salad'
+            ],
+            delay: 0.2
+          },
+          {
+            name: 'Snack',
+            icon: <Carrot className="h-5 w-5 text-primary" />,
+            items: [
+              '1 apple or 1 orange',
+              'Handful of roasted chana',
+              '1 cup green tea'
+            ],
+            delay: 0.3
+          },
+          {
+            name: 'Dinner',
+            icon: <Moon className="h-5 w-5 text-primary" />,
+            items: [
+              '1 bowl vegetable curry (no cream)',
+              '1 multigrain roti',
+              '1 bowl mixed vegetables',
+              '1 small bowl dal'
+            ],
+            delay: 0.4
+          }
+        ]
+      };
+    } else if (goal === 'gain') {
+      return {
+        title: 'Weight Gain Meal Plan',
+        description: 'Higher calorie, nutrient-dense foods with adequate protein',
+        meals: [
+          {
+            name: 'Breakfast',
+            icon: <Coffee className="h-5 w-5 text-primary" />,
+            items: [
+              '2 stuffed parathas with ghee',
+              '1 bowl paneer bhurji',
+              '1 glass full-fat milk with nuts',
+              '1 banana'
+            ],
+            delay: 0.1
+          },
+          {
+            name: 'Lunch',
+            icon: <Sun className="h-5 w-5 text-primary" />,
+            items: [
+              '2 cups rice',
+              '1 bowl rajma or chole',
+              '2-3 chapatis with ghee',
+              '1 bowl vegetable curry',
+              '1 glass buttermilk'
+            ],
+            delay: 0.2
+          },
+          {
+            name: 'Snack',
+            icon: <Carrot className="h-5 w-5 text-primary" />,
+            items: [
+              '1 mango milkshake or banana shake',
+              '2 samosas or 1 plate pakoras',
+              '1 cup chai with full-fat milk'
+            ],
+            delay: 0.3
+          },
+          {
+            name: 'Dinner',
+            icon: <Moon className="h-5 w-5 text-primary" />,
+            items: [
+              '2 cups biryani or pulao',
+              '1 bowl paneer butter masala',
+              '2-3 butter naans',
+              '1 bowl mixed vegetable curry',
+              '1 bowl sweet (kheer or halwa)'
+            ],
+            delay: 0.4
+          }
+        ]
+      };
+    } else {
+      return {
+        title: 'Weight Maintenance Meal Plan',
+        description: 'Balanced diet with moderate portions',
+        meals: [
+          {
+            name: 'Breakfast',
+            icon: <Coffee className="h-5 w-5 text-primary" />,
+            items: [
+              '2 idlis with sambhar and chutney',
+              'OR 1 bowl poha with vegetables',
+              '1 cup tea or coffee',
+              '1 fruit (apple or orange)'
+            ],
+            delay: 0.1
+          },
+          {
+            name: 'Lunch',
+            icon: <Sun className="h-5 w-5 text-primary" />,
+            items: [
+              '1.5 cups rice or 3 chapatis',
+              '1 bowl dal',
+              '1 bowl vegetable curry',
+              '1 bowl salad',
+              '1 bowl curd'
+            ],
+            delay: 0.2
+          },
+          {
+            name: 'Snack',
+            icon: <Carrot className="h-5 w-5 text-primary" />,
+            items: [
+              '1 bowl sprouts chaat',
+              'OR 1 vegetable sandwich',
+              '1 cup chai',
+              'Handful of nuts'
+            ],
+            delay: 0.3
+          },
+          {
+            name: 'Dinner',
+            icon: <Moon className="h-5 w-5 text-primary" />,
+            items: [
+              '2-3 chapatis',
+              '1 bowl dal or rajma',
+              '1 bowl vegetable curry',
+              '1 bowl curd or raita'
+            ],
+            delay: 0.4
+          }
+        ]
+      };
+    }
+  };
+
+  const mealPlan = getMealPlan();
+
+  const MealCard: React.FC<{ meal: any }> = ({ meal }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: meal.delay }}
+      className="bg-background rounded-xl p-5 shadow-sm"
+    >
+      <div className="flex items-start space-x-4">
+        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+          {meal.icon}
+        </div>
+        <div className="flex-1">
+          <h4 className="font-medium text-base mb-2">{meal.name}</h4>
+          <ul className="space-y-1 text-sm text-muted-foreground">
+            {meal.items.map((item: string, idx: number) => (
+              <li key={idx} className="flex items-start gap-2">
+                <span className="text-primary">•</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-      <div>
-        <h4 className="font-medium text-base mb-2">{title}</h4>
-        <p className="text-muted-foreground text-sm">{description}</p>
-      </div>
-    </div>
-  </motion.div>
-);
-
-const MealRecommendations: React.FC = () => {
-  const { healthData } = useHealth();
-
-  if (!healthData) {
-    return null;
-  }
-
-  const { calorieNeeds } = healthData;
-  const meals = getMealSuggestions(calorieNeeds);
+    </motion.div>
+  );
 
   return (
     <motion.div
@@ -76,7 +208,10 @@ const MealRecommendations: React.FC = () => {
     >
       <div className="p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Meal Recommendations</h2>
+          <div>
+            <h2 className="text-2xl font-bold">{mealPlan.title}</h2>
+            <p className="text-muted-foreground mt-1">{mealPlan.description}</p>
+          </div>
           <div className="text-xs px-3 py-1 bg-secondary rounded-full">
             Preview Mode
           </div>
@@ -84,48 +219,31 @@ const MealRecommendations: React.FC = () => {
 
         <p className="text-muted-foreground mb-6">
           Based on your recommended daily caloric intake of{' '}
-          <span className="font-medium text-foreground">{Math.round(calorieNeeds)} kcal</span>,
+          <span className="font-medium text-foreground">{Math.round(calories)} kcal</span>,
           here are some suggested Indian meal options:
         </p>
 
         <div className="space-y-4">
-          <MealCard
-            title="Breakfast"
-            description={meals.breakfast}
-            icon={<Coffee className="h-5 w-5 text-primary" />}
-            delay={0.1}
-          />
-          <MealCard
-            title="Lunch"
-            description={meals.lunch}
-            icon={<Sun className="h-5 w-5 text-primary" />}
-            delay={0.2}
-          />
-          <MealCard
-            title="Dinner"
-            description={meals.dinner}
-            icon={<Moon className="h-5 w-5 text-primary" />}
-            delay={0.3}
-          />
-          <MealCard
-            title="Snacks"
-            description={meals.snacks}
-            icon={<Utensils className="h-5 w-5 text-primary" />}
-            delay={0.4}
-          />
+          {mealPlan.meals.map((meal, index) => (
+            <MealCard key={index} meal={meal} />
+          ))}
         </div>
 
         <div className="mt-6 bg-secondary/50 rounded-xl p-4">
           <p className="text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">Note:</span> These are general recommendations.
-            For personalized meal plans with detailed nutrition information, please create an account or login.
-            The integrated AI will provide more tailored suggestions based on your preferences and dietary restrictions.
+            <span className="font-medium text-foreground">Notes:</span>
+            <ul className="list-disc pl-5 space-y-1 mt-2">
+              <li>Adjust portion sizes based on your hunger levels and activity.</li>
+              <li>Stay hydrated by drinking 8-10 glasses of water daily.</li>
+              <li>These are sample recommendations. Consult a nutritionist for a personalized plan.</li>
+              <li>Include seasonal fruits and vegetables for better nutrition.</li>
+            </ul>
           </p>
         </div>
 
         <div className="mt-6 flex justify-center">
-          <Button variant="outline" disabled>
-            Get Detailed Meal Plan (Coming Soon)
+          <Button variant="outline">
+            Get Detailed Meal Plan
           </Button>
         </div>
       </div>

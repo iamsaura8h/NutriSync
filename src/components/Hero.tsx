@@ -56,6 +56,11 @@ const Hero: React.FC = () => {
                   Sign In
                 </Button>
               </Link>
+              <Link to="/aiScan">
+                <Button size="lg" variant="outline" className="rounded-full px-8">
+                  NutriScan
+                </Button>
+              </Link>
             </motion.div>
           </div>
 
