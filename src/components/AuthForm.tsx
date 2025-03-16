@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -47,9 +46,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     
     try {
       if (isLogin) {
-        // Handle login - using email instead of username for SignInWithPasswordCredentials
+        // Handle login - using email for SignInWithPassword
         const { data, error } = await supabase.auth.signInWithPassword({
-          email: formData.email, // Changed from username to email
+          email: formData.email,
           password: formData.password,
         });
         
@@ -76,6 +75,17 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         
         if (error) throw error;
         
+        // Check if email confirmation is required
+        if (data?.user?.identities?.length === 0) {
+          toast({
+            title: "Account already exists",
+            description: "Please log in with this email instead",
+            variant: "destructive"
+          });
+          navigate('/login');
+          return;
+        }
+        
         toast({
           title: "Registration successful",
           description: `Welcome, ${formData.name}!`,
@@ -85,9 +95,19 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         navigate('/');
       }
     } catch (error: any) {
+      console.error("Auth error:", error);
+      
+      // Provide more user-friendly error messages
+      const errorMessage = 
+        error.message === "Email not confirmed" 
+          ? "Please verify your email before logging in" 
+          : error.message === "Invalid login credentials"
+          ? "The email or password you entered is incorrect"
+          : error.message || "An error occurred during authentication";
+      
       toast({
         title: "Error",
-        description: error.message || "An error occurred during authentication",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
