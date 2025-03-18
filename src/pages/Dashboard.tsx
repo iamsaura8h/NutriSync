@@ -48,33 +48,35 @@ const Dashboard: React.FC = () => {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-[1200px] mx-auto space-y-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Your Dashboard</h1>
-          <p className="text-muted-foreground mb-8">
+          <h1 className="text-3xl font-bold mb-2">Your Dashboard</h1>
+          <p className="text-muted-foreground mb-6">
             Track your progress, nutrition goals, and get personalized recommendations
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="md:col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* First row */}
+          <div className="lg:col-span-4">
             <WeightTracker />
           </div>
-          <div className="md:col-span-2">
+          <div className="lg:col-span-8">
             <ProgressTracker />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Second row */}
+          <div className="lg:col-span-6">
             <NutritionGoals />
           </div>
           {healthData && (
-            <div>
+            <div className="lg:col-span-6">
               <MealRecommendations 
                 calories={healthData.calorieNeeds} 
                 goal={healthData.goal === Goal.WEIGHT_LOSS ? 'loss' : 

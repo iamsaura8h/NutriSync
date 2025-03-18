@@ -23,19 +23,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           
           <SidebarInset>
             {user && <SidebarRail />}
-            <motion.div
+            <motion.main
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              className="container mx-auto px-4 py-8"
+              className="w-full py-6 px-4"
             >
               {children}
-            </motion.div>
+            </motion.main>
           </SidebarInset>
         </div>
         
-        <footer className="py-6 border-t border-border">
+        <footer className="py-4 border-t border-border">
           <div className="container mx-auto px-4">
             <div className="text-center text-sm text-muted-foreground">
               <p>© {new Date().getFullYear()} NutriScan. All rights reserved.</p>
