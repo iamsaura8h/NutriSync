@@ -10,7 +10,7 @@ import NutritionGoals from '@/components/NutritionGoals';
 import ProgressTracker from '@/components/ProgressTracker';
 import MealRecommendations from '@/components/MealRecommendations';
 import { useHealth } from '@/contexts/HealthContext';
-import { Goal } from '@/utils/calculations';
+import { Gender, ActivityLevel, Goal } from '@/utils/calculations';
 
 const Dashboard: React.FC = () => {
   const { user, loading } = useAuth();
@@ -36,9 +36,9 @@ const Dashboard: React.FC = () => {
         weight: 70,
         height: 170,
         age: 30,
-        gender: 'Male',
-        activityLevel: 'Moderately Active',
-        goal: 'Maintenance',
+        gender: Gender.MALE,
+        activityLevel: ActivityLevel.MODERATELY_ACTIVE,
+        goal: Goal.MAINTENANCE,
       });
       calculateAll();
     }
@@ -77,8 +77,8 @@ const Dashboard: React.FC = () => {
             <div>
               <MealRecommendations 
                 calories={healthData.calorieNeeds} 
-                goal={healthData.goal === 'Weight Loss' ? 'loss' : 
-                      healthData.goal === 'Weight Gain' ? 'gain' : 
+                goal={healthData.goal === Goal.WEIGHT_LOSS ? 'loss' : 
+                      healthData.goal === Goal.WEIGHT_GAIN ? 'gain' : 
                       'maintenance'} 
               />
             </div>

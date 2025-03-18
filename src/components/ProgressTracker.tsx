@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
@@ -6,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { ChartLineUp, Calendar, Trophy } from 'lucide-react';
+import { ChartLine, Calendar, Trophy } from 'lucide-react';
 
 interface WeightLog {
   weight: number;
@@ -101,7 +100,7 @@ const ProgressTracker: React.FC = () => {
     <Card className="w-full">
       <CardHeader className="pb-0">
         <CardTitle className="text-xl flex items-center gap-2">
-          <ChartLineUp className="h-5 w-5 text-primary" />
+          <ChartLine className="h-5 w-5 text-primary" />
           Your Progress
         </CardTitle>
       </CardHeader>
