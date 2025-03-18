@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -47,11 +46,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     
     try {
       if (isLogin) {
-        // Handle login using username from metadata and email constructed from username
         const email = `${formData.username.toLowerCase()}@example.com`;
         
         const { data, error } = await supabase.auth.signInWithPassword({
-          email: email, // Using constructed email based on username
+          email: email,
           password: formData.password,
         });
         
@@ -62,12 +60,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           description: "Welcome back!",
         });
         
-        navigate('/');
+        navigate('/dashboard');
       } else {
-        // For registration, construct an email from the username
         const email = `${formData.username.toLowerCase()}@example.com`;
         
-        // Handle registration with constructed email
         const { data, error } = await supabase.auth.signUp({
           email: email,
           password: formData.password,
@@ -81,7 +77,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         
         if (error) throw error;
         
-        // Check if user already exists
         if (data?.user?.identities?.length === 0) {
           toast({
             title: "Account already exists",
@@ -97,13 +92,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           description: `Welcome, ${formData.name}!`,
         });
         
-        // Always navigate to home after successful signup
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (error: any) {
       console.error("Auth error:", error);
       
-      // Provide more user-friendly error messages
       const errorMessage = 
         error.message === "Invalid login credentials"
           ? "The username or password you entered is incorrect"
