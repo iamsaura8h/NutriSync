@@ -9,7 +9,7 @@ import { useHealth } from '@/contexts/HealthContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
-import { RotateCcw, Save } from 'lucide-react';
+import { RotateCcw, Save, LayoutDashboard } from 'lucide-react';
 
 const Results: React.FC = () => {
   const navigate = useNavigate();
@@ -82,11 +82,25 @@ const Results: React.FC = () => {
               <Save className="h-4 w-4" />
               Save Results
             </Button>
+            <Button 
+              variant="default" 
+              size="sm"
+              className="flex items-center gap-2"
+              onClick={() => navigate('/dashboard')}
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </Button>
           </div>
         </div>
 
         <ResultCard />
-        <MealRecommendations />
+        <MealRecommendations 
+          calories={healthData.calorieNeeds}
+          goal={healthData.goal === 'Weight Loss' ? 'loss' : 
+                healthData.goal === 'Weight Gain' ? 'gain' : 
+                'maintenance'} 
+        />
       </div>
     </Layout>
   );

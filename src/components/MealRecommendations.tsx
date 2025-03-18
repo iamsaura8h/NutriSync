@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -199,24 +200,18 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories, goa
   );
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3, delay: 0.2 }}
-      className="glass-card rounded-xl overflow-hidden shadow-sm mt-8"
-    >
-      <div className="p-6 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-2xl font-bold">{mealPlan.title}</h2>
-            <p className="text-muted-foreground mt-1">{mealPlan.description}</p>
-          </div>
-          <div className="text-xs px-3 py-1 bg-secondary rounded-full">
-            Preview Mode
-          </div>
-        </div>
-
+    <Card className="w-full h-full">
+      <CardHeader className="pb-4">
+        <CardTitle className="text-xl flex items-center gap-2">
+          <Utensils className="h-5 w-5 text-primary" />
+          {mealPlan.title}
+        </CardTitle>
+        <CardDescription>
+          {mealPlan.description}
+        </CardDescription>
+      </CardHeader>
+      
+      <CardContent>
         <p className="text-muted-foreground mb-6">
           Based on your recommended daily caloric intake of{' '}
           <span className="font-medium text-foreground">{Math.round(calories)} kcal</span>,
@@ -240,14 +235,8 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories, goa
             </ul>
           </p>
         </div>
-
-        <div className="mt-6 flex justify-center">
-          <Button variant="outline">
-            Get Detailed Meal Plan
-          </Button>
-        </div>
-      </div>
-    </motion.div>
+      </CardContent>
+    </Card>
   );
 };
 

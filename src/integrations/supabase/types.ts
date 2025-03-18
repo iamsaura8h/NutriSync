@@ -9,6 +9,84 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      food_entries: {
+        Row: {
+          calories: number
+          carbs: number
+          created_at: string
+          entry_date: string
+          fat: number
+          food_name: string
+          id: string
+          meal_type: string
+          portion_size: number
+          portion_unit: string
+          protein: number
+          user_id: string
+        }
+        Insert: {
+          calories: number
+          carbs: number
+          created_at?: string
+          entry_date?: string
+          fat: number
+          food_name: string
+          id?: string
+          meal_type: string
+          portion_size: number
+          portion_unit: string
+          protein: number
+          user_id: string
+        }
+        Update: {
+          calories?: number
+          carbs?: number
+          created_at?: string
+          entry_date?: string
+          fat?: number
+          food_name?: string
+          id?: string
+          meal_type?: string
+          portion_size?: number
+          portion_unit?: string
+          protein?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      nutrition_goals: {
+        Row: {
+          created_at: string
+          daily_calories: number
+          daily_carbs: number
+          daily_fat: number
+          daily_protein: number
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          daily_calories: number
+          daily_carbs: number
+          daily_fat: number
+          daily_protein: number
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          daily_calories?: number
+          daily_carbs?: number
+          daily_fat?: number
+          daily_protein?: number
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -30,6 +108,60 @@ export type Database = {
           id?: string
           updated_at?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      user_preferences: {
+        Row: {
+          created_at: string
+          fav_carbs: string[] | null
+          fav_fruits: string[] | null
+          fav_proteins: string[] | null
+          fav_vegetables: string[] | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          fav_carbs?: string[] | null
+          fav_fruits?: string[] | null
+          fav_proteins?: string[] | null
+          fav_vegetables?: string[] | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          fav_carbs?: string[] | null
+          fav_fruits?: string[] | null
+          fav_proteins?: string[] | null
+          fav_vegetables?: string[] | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      weight_logs: {
+        Row: {
+          id: string
+          recorded_at: string
+          user_id: string
+          weight: number
+        }
+        Insert: {
+          id?: string
+          recorded_at?: string
+          user_id: string
+          weight: number
+        }
+        Update: {
+          id?: string
+          recorded_at?: string
+          user_id?: string
+          weight?: number
         }
         Relationships: []
       }

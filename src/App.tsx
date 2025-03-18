@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HealthProvider } from "./contexts/HealthContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
 import Calculator from "./pages/Calculator";
 import Results from "./pages/Results";
 import Login from "./pages/Login";
@@ -29,6 +30,11 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/aiScan" element={<AiNutriScan />} />
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
               <Route path="/calculator" element={
                 <ProtectedRoute>
                   <Calculator />
