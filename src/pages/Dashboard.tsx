@@ -9,6 +9,7 @@ import WeightTracker from '@/components/WeightTracker';
 import NutritionGoals from '@/components/NutritionGoals';
 import ProgressTracker from '@/components/ProgressTracker';
 import MealRecommendations from '@/components/MealRecommendations';
+import WelcomeMessage from '@/components/WelcomeMessage';
 import { useHealth } from '@/contexts/HealthContext';
 import { Gender, ActivityLevel, Goal } from '@/utils/calculations';
 
@@ -49,17 +50,8 @@ const Dashboard: React.FC = () => {
   return (
     <Layout>
       <div className="max-w-[1200px] mx-auto space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-3xl font-bold mb-2">Your Dashboard</h1>
-          <p className="text-muted-foreground mb-6">
-            Track your progress, nutrition goals, and get personalized recommendations
-          </p>
-        </motion.div>
-
+        <WelcomeMessage />
+        
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* First row */}
           <div className="lg:col-span-4">

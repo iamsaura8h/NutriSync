@@ -8,7 +8,7 @@ const WelcomeMessage: React.FC = () => {
   
   if (!user) return null;
   
-  const fullName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'there';
+  const fullName = user.user_metadata?.name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'there';
   
   return (
     <motion.div

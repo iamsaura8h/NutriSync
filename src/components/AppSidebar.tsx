@@ -44,10 +44,10 @@ const AppSidebar: React.FC = () => {
     { title: 'AI NutriScan', path: '/aiScan', icon: Camera },
   ];
   
-  // Get first letter of username for avatar
-  const userInitial = user?.user_metadata?.name 
-    ? user.user_metadata.name.charAt(0).toUpperCase() 
-    : user?.email?.charAt(0).toUpperCase() || '?';
+  // Get user information for avatar and display
+  const userName = user?.user_metadata?.name || user?.user_metadata?.full_name || 'User';
+  const userEmail = user?.email || '';
+  const userInitial = userName.charAt(0).toUpperCase();
   
   return (
     <Sidebar variant="inset" className="md:w-[260px]">
@@ -106,15 +106,14 @@ const AppSidebar: React.FC = () => {
       </SidebarContent>
       
       <SidebarFooter className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center space-x-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="" />
-              <AvatarFallback>{userInitial}</AvatarFallback>
-            </Avatar>
-            <div className="text-sm font-medium">
-              {user?.user_metadata?.name || user?.email}
-            </div>
+        <div className="flex items-center space-x-3 mb-4">
+          <Avatar className="h-10 w-10">
+            <AvatarImage src="" />
+            <AvatarFallback>{userInitial}</AvatarFallback>
+          </Avatar>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold">{userName}</span>
+            <span className="text-xs text-muted-foreground">{userEmail}</span>
           </div>
         </div>
         <Button 
