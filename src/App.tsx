@@ -15,7 +15,7 @@ import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AiNutriScan from "./pages/AiNutriScan";
-
+import HowToUse from "./pages/HowToUse";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +30,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/aiScan" element={<AiNutriScan />} />
+              <Route path="/how-to-use" element={<HowToUse />} />
               <Route path="/dashboard" element={
                 <ProtectedRoute>
                   <Dashboard />

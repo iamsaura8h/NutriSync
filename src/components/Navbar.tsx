@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,6 +16,7 @@ const Navbar: React.FC = () => {
     { href: '/', label: 'Home' },
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/calculator', label: 'Calculator' },
+    { href: '/how-to-use', label: 'How to Use', icon: Info },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -43,13 +44,14 @@ const Navbar: React.FC = () => {
                 key={link.href}
                 to={link.href}
                 className={cn(
-                  "text-sm font-medium transition-colors",
+                  "text-sm font-medium transition-colors flex items-center gap-1",
                   isActive(link.href)
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 )}
                 aria-current={isActive(link.href) ? "page" : undefined}
               >
+                {link.icon && <link.icon size={16} />}
                 {link.label}
               </Link>
             ))}
@@ -94,7 +96,7 @@ const Navbar: React.FC = () => {
                 key={link.href}
                 to={link.href}
                 className={cn(
-                  "block py-2 text-sm font-medium transition-colors",
+                  "block py-2 text-sm font-medium transition-colors flex items-center gap-1",
                   isActive(link.href)
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground"
@@ -102,6 +104,7 @@ const Navbar: React.FC = () => {
                 onClick={closeMenu}
                 aria-current={isActive(link.href) ? "page" : undefined}
               >
+                {link.icon && <link.icon size={16} />}
                 {link.label}
               </Link>
             ))}
