@@ -43,9 +43,18 @@ const Dashboard: React.FC = () => {
       });
       calculateAll();
     }
-  }, [user, healthData]);
+  }, [user, healthData, setHealthInputs, calculateAll]);
 
   if (loading || !user) return null;
+
+  // Let's add a check to ensure we have valid calorieNeeds before passing to MealRecommendations
+  const calorieNeeds = healthData?.calorieNeeds && !isNaN(healthData.calorieNeeds) 
+    ? healthData.calorieNeeds 
+    : 2000; // Fallback to 2000 calories if no valid data
+
+  // Make sure we have a valid goal string
+  const goalType = healthData?.goal === Goal.WEIGHT_LOSS ? 'loss' :
+                 healthData?.goal === Goal.WEIGHT_GAIN ? 'gain' : 'maintenance';
 
   return (
     <Layout>
@@ -67,16 +76,12 @@ const Dashboard: React.FC = () => {
           <div className="lg:col-span-6">
             <NutritionGoals />
           </div>
-          {healthData && (
-            <div className="lg:col-span-6">
-              <MealRecommendations 
-                calories={healthData.calorieNeeds} 
-                goal={healthData.goal === Goal.WEIGHT_LOSS ? 'loss' : 
-                      healthData.goal === Goal.WEIGHT_GAIN ? 'gain' : 
-                      'maintenance'} 
-              />
-            </div>
-          )}
+          <div className="lg:col-span-6">
+            <MealRecommendations 
+              calories={calorieNeeds} 
+              goal={goalType} 
+            />
+          </div>
         </div>
       </div>
     </Layout>

@@ -10,6 +10,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { RotateCcw, Save, LayoutDashboard } from 'lucide-react';
+import { Goal } from '@/utils/calculations';
 
 const Results: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +27,15 @@ const Results: React.FC = () => {
   if (!healthData) {
     return null;
   }
+
+  // Let's add a check to ensure we have valid calorieNeeds
+  const calorieNeeds = healthData.calorieNeeds && !isNaN(healthData.calorieNeeds) 
+    ? healthData.calorieNeeds 
+    : 2000; // Fallback to 2000 calories if no valid data
+
+  // Make sure we have a valid goal string
+  const goalType = healthData.goal === Goal.WEIGHT_LOSS ? 'loss' :
+                 healthData.goal === Goal.WEIGHT_GAIN ? 'gain' : 'maintenance';
 
   const saveResults = async () => {
     if (!user) {
@@ -96,10 +106,8 @@ const Results: React.FC = () => {
 
         <ResultCard />
         <MealRecommendations 
-          calories={healthData.calorieNeeds}
-          goal={healthData.goal === 'Weight Loss' ? 'loss' : 
-                healthData.goal === 'Weight Gain' ? 'gain' : 
-                'maintenance'} 
+          calories={calorieNeeds}
+          goal={goalType} 
         />
       </div>
     </Layout>
