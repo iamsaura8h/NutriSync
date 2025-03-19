@@ -14,7 +14,7 @@ interface MealRecommendationsProps {
   goal: Goal;
 }
 
-const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories = 2000, goal = 'maintenance' }) => {
+const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories =  2000, goal = 'maintenance' }) => {
   const [activeTab, setActiveTab] = useState<string>("standard");
 
   useEffect(() => {
@@ -187,18 +187,18 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories = 20
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: meal.delay }}
-      className="bg-background rounded-xl p-5 shadow-sm"
+      className="bg-background rounded-xl p-5 shadow-sm border border-border hover:shadow-md transition-all"
     >
       <div className="flex items-start space-x-4">
-        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
           {meal.icon}
         </div>
         <div className="flex-1">
           <h4 className="font-medium text-base mb-2">{meal.name}</h4>
-          <ul className="space-y-1 text-sm text-muted-foreground">
+          <ul className="space-y-2 text-sm text-muted-foreground">
             {meal.items.map((item: string, idx: number) => (
               <li key={idx} className="flex items-start gap-2">
-                <span className="text-primary">•</span>
+                <span className="text-primary mt-1">•</span>
                 <span>{item}</span>
               </li>
             ))}
@@ -211,8 +211,8 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories = 20
   const safeCalories = calories && !isNaN(calories) && calories > 0 ? calories : 2000;
 
   return (
-    <Card className="w-full h-full">
-      <CardHeader className="pb-4">
+    <Card className="w-full h-full overflow-hidden border-2 border-border/5 shadow-md hover:shadow-lg transition-all">
+      <CardHeader className="pb-4 bg-gradient-to-r from-background to-secondary/10">
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl flex items-center gap-2">
             <Utensils className="h-5 w-5 text-primary" />
@@ -231,21 +231,21 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories = 20
             </TabsTrigger>
           </TabsList>
           
-          <CardContent>
-            <TabsContent value="standard" className="mt-0">
-              <p className="text-muted-foreground mb-6">
+          <CardContent className="px-0 pt-6">
+            <TabsContent value="standard" className="mt-0 space-y-6">
+              <p className="text-muted-foreground mb-6 px-6">
                 Based on your recommended daily caloric intake of{' '}
                 <span className="font-medium text-foreground">{Math.round(safeCalories)} kcal</span>,
                 here are some suggested Indian meal options:
               </p>
 
-              <div className="space-y-4">
+              <div className="space-y-4 px-6">
                 {mealPlan.meals.map((meal, index) => (
                   <MealCard key={index} meal={meal} />
                 ))}
               </div>
 
-              <div className="mt-6 bg-secondary/50 rounded-xl p-4">
+              <div className="mt-6 bg-secondary/30 rounded-xl p-4 mx-6">
                 <p className="text-sm text-muted-foreground">
                   <span className="font-medium text-foreground">Notes:</span>
                   <ul className="list-disc pl-5 space-y-1 mt-2">
