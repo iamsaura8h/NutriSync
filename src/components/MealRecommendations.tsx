@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,10 +11,15 @@ interface MealRecommendationsProps {
   goal: Goal;
 }
 
-const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories, goal }) => {
-  // Get meal plan based on calorie needs and goal
+const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories = 2000, goal = 'maintenance' }) => {
+  useEffect(() => {
+    console.log('MealRecommendations props:', { calories, goal });
+  }, [calories, goal]);
+  
   const getMealPlan = () => {
-    if (goal === 'loss') {
+    const safeGoal = ['loss', 'maintenance', 'gain'].includes(goal) ? goal : 'maintenance';
+    
+    if (safeGoal === 'loss') {
       return {
         title: 'Weight Loss Meal Plan',
         description: 'Lower carb, higher protein diet with focus on whole foods',
@@ -64,7 +68,7 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories, goa
           }
         ]
       };
-    } else if (goal === 'gain') {
+    } else if (safeGoal === 'gain') {
       return {
         title: 'Weight Gain Meal Plan',
         description: 'Higher calorie, nutrient-dense foods with adequate protein',
@@ -199,6 +203,8 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories, goa
     </motion.div>
   );
 
+  const safeCalories = calories && !isNaN(calories) && calories > 0 ? calories : 2000;
+
   return (
     <Card className="w-full h-full">
       <CardHeader className="pb-4">
@@ -214,7 +220,7 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories, goa
       <CardContent>
         <p className="text-muted-foreground mb-6">
           Based on your recommended daily caloric intake of{' '}
-          <span className="font-medium text-foreground">{Math.round(calories)} kcal</span>,
+          <span className="font-medium text-foreground">{Math.round(safeCalories)} kcal</span>,
           here are some suggested Indian meal options:
         </p>
 

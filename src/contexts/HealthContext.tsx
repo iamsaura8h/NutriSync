@@ -1,5 +1,5 @@
 
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { 
   ActivityLevel, 
   BMICategory, 
@@ -78,6 +78,9 @@ export const HealthProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const tdee = calculateTDEE(bmr, activityLevel);
     const calorieNeeds = calculateCalorieNeeds(tdee, goal);
 
+    // Log values for debugging
+    console.log('Calculated values:', { bmi, bmiCategory, bmr, tdee, calorieNeeds, goal });
+
     setHealthData((prevData) => ({
       ...prevData!,
       bmi,
@@ -87,6 +90,13 @@ export const HealthProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       calorieNeeds,
     }));
   };
+
+  // Recalculate values whenever health inputs change
+  useEffect(() => {
+    if (healthData) {
+      calculateAll();
+    }
+  }, [healthData?.weight, healthData?.height, healthData?.age, healthData?.gender, healthData?.activityLevel, healthData?.goal]);
 
   const clearData = () => {
     setHealthData(null);
