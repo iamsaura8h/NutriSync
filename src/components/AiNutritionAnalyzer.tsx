@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface NutritionData {
+  dish: string;
   food_name: string;
   calories: number;
   protein: number;
@@ -40,11 +41,15 @@ const AiNutritionAnalyzer = () => {
     setAdded(false);
 
     try {
-      const response = await fetch("http://localhost:5000/analyze-food", {
+      const response = await fetch("http://localhost:5000/analyze-nutrition", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ description }),
+        body: JSON.stringify({ dish: description, portion: "1 serving" }),
       });
+
+      if (!response.ok) {
+        throw new Error("Failed to analyze food");
+      }
 
       const data = await response.json();
 
@@ -53,9 +58,13 @@ const AiNutritionAnalyzer = () => {
         setResult(null);
       } else {
         setResult({
-          ...data,
+          dish: data.dish,
+          food_name: data.dish,
+          calories: data.calories || 0,
+          protein: data.protein_g || 0,
+          carbs: data.carbs_g || 0,
+          fat: data.fat_g || 0,
           meal_type: mealType,
-          food_name: data.food_name || description.slice(0, 40)
         });
       }
     } catch (err) {
@@ -170,7 +179,7 @@ const AiNutritionAnalyzer = () => {
           <div className="space-y-2">
             <div className="flex justify-between">
               <span>Food:</span>
-              <span className="font-medium">{result.food_name}</span>
+              <span className="font-medium">{result.dish}</span>
             </div>
             <div className="flex justify-between">
               <span>Calories:</span>

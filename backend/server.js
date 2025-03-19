@@ -105,7 +105,6 @@ Ensure all values are estimated ranges based on common nutritional data. Keep re
   }
 });
 
-
 // AI Nutrion Finder
 app.post("/analyze-nutrition", async (req, res) => {
   try {
@@ -214,7 +213,6 @@ app.post("/generate-meal-plan", async (req, res) => {
     res.status(500).json({ error: "Failed to generate meal plan." });
   }
 });
-
 
 // server
 app.listen(5000, () => console.log("Server running on port 5000"));
