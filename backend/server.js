@@ -9,11 +9,13 @@ dotenv.config();
 const app = express();
 const upload = multer({ dest: "uploads/" });
 app.use(cors());
+app.use(express.json());
 
 app.get("/", async (req, res) => {
   res.send("Hello from backend");
 });
 
+// NutriScan api
 app.post("/analyze", upload.single("dishImage"), async (req, res) => {
   try {
     const imagePath = req.file.path;
@@ -103,4 +105,116 @@ Ensure all values are estimated ranges based on common nutritional data. Keep re
   }
 });
 
+
+// AI Nutrion Finder
+app.post("/analyze-nutrition", async (req, res) => {
+  try {
+    const { dish, portion } = req.body;
+    if (!dish || !portion) {
+      return res.status(400).json({ error: "Dish name and portion size are required." });
+    }
+
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: `You are a food nutrition expert. Estimate the nutritional values for "${dish}" for a portion size of "${portion}". Provide the output in JSON format with approximate values (no ranges). Example output:
+
+{
+  "dish": "Dish Name",
+  "portion": "Portion Size",
+  "calories": 400,
+  "protein_g": 17,
+  "carbs_g": 31,
+  "fat_g": 23
+}
+
+Only return valid JSON data.`
+              }
+            ]
+          }
+        ]
+      }
+    );
+
+    // Extract and parse the response
+    const geminiResponse =
+      response.data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+
+    const jsonStart = geminiResponse.indexOf("{");
+    const jsonEnd = geminiResponse.lastIndexOf("}");
+    const cleanJson = geminiResponse.substring(jsonStart, jsonEnd + 1);
+
+    const parsedData = JSON.parse(cleanJson);
+
+    res.json(parsedData);
+  } catch (error) {
+    console.error(
+      "Error from Gemini API:",
+      error.response ? error.response.data : error.message
+    );
+    res.status(500).json({ error: "Failed to analyze nutrition data." });
+  }
+});
+
+// AI Meal Planner
+app.post("/generate-meal-plan", async (req, res) => {
+  try {
+    const { ingredients, cuisine, mealType, targetCalories } = req.body;
+
+    if (!ingredients || !cuisine || !mealType || !targetCalories) {
+      return res.status(400).json({ error: "All fields are required." });
+    }
+
+    const prompt = `
+      You are a dietitian. Suggest 3-4 meal options based on the following details:
+      - Preferred ingredients: ${ingredients}
+      - Cuisine: ${cuisine}
+      - Meal Type: ${mealType}
+      - Target Calories: ${targetCalories} kcal
+
+      Each meal should include:
+      - Dish name
+      - Approximate calories
+      - Brief description
+
+      Respond in the following JSON format:
+
+      {
+        "meals": [
+          { "name": "Meal Name", "calories": XXX, "description": "Short description" },
+          { "name": "Meal Name", "calories": XXX, "description": "Short description" },
+          { "name": "Meal Name", "calories": XXX, "description": "Short description" }
+        ]
+      }
+    `;
+
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+      }
+    );
+
+    // Extract JSON response
+    const geminiResponse =
+      response.data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+    const jsonStart = geminiResponse.indexOf("{");
+    const jsonEnd = geminiResponse.lastIndexOf("}");
+    const cleanJson = geminiResponse.substring(jsonStart, jsonEnd + 1);
+
+    const parsedData = JSON.parse(cleanJson);
+    res.json(parsedData);
+  } catch (error) {
+    console.error("Error from Gemini API:", error.message);
+    res.status(500).json({ error: "Failed to generate meal plan." });
+  }
+});
+
+
+// server
 app.listen(5000, () => console.log("Server running on port 5000"));

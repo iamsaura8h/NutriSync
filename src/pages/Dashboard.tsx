@@ -12,6 +12,7 @@ import MealRecommendations from '@/components/MealRecommendations';
 import WelcomeMessage from '@/components/WelcomeMessage';
 import { useHealth } from '@/contexts/HealthContext';
 import { Gender, ActivityLevel, Goal } from '@/utils/calculations';
+import AiMealRecommendations from '@/components/AiMealPlanner';
 
 const Dashboard: React.FC = () => {
   const { user, loading } = useAuth();
@@ -45,8 +46,7 @@ const Dashboard: React.FC = () => {
     }
   }, [user, healthData]);
 
-  if (loading || !user) return null;
-
+  if (loading || !user) return null; 
   return (
     <Layout>
       <div className="max-w-[1200px] mx-auto space-y-6">
@@ -75,6 +75,12 @@ const Dashboard: React.FC = () => {
                       healthData.goal === Goal.WEIGHT_GAIN ? 'gain' : 
                       'maintenance'} 
               />
+              {/* <AiMealRecommendations 
+              calories={healthData.calorieNeeds} 
+              goal={healthData.goal === Goal.WEIGHT_LOSS ? 'loss' : 
+                    healthData.goal === Goal.WEIGHT_GAIN ? 'gain' : 
+                    'maintenance'} 
+            /> */}
             </div>
           )}
         </div>
