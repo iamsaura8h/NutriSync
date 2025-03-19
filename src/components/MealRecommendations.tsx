@@ -230,40 +230,40 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories = 20
               AI Powered
             </TabsTrigger>
           </TabsList>
+          
+          <CardContent>
+            <TabsContent value="standard" className="mt-0">
+              <p className="text-muted-foreground mb-6">
+                Based on your recommended daily caloric intake of{' '}
+                <span className="font-medium text-foreground">{Math.round(safeCalories)} kcal</span>,
+                here are some suggested Indian meal options:
+              </p>
+
+              <div className="space-y-4">
+                {mealPlan.meals.map((meal, index) => (
+                  <MealCard key={index} meal={meal} />
+                ))}
+              </div>
+
+              <div className="mt-6 bg-secondary/50 rounded-xl p-4">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Notes:</span>
+                  <ul className="list-disc pl-5 space-y-1 mt-2">
+                    <li>Adjust portion sizes based on your hunger levels and activity.</li>
+                    <li>Stay hydrated by drinking 8-10 glasses of water daily.</li>
+                    <li>These are sample recommendations. Consult a nutritionist for a personalized plan.</li>
+                    <li>Include seasonal fruits and vegetables for better nutrition.</li>
+                  </ul>
+                </p>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="ai" className="mt-0">
+              <AiMealPlanner />
+            </TabsContent>
+          </CardContent>
         </Tabs>
       </CardHeader>
-      
-      <CardContent>
-        <TabsContent value="standard" className="mt-0">
-          <p className="text-muted-foreground mb-6">
-            Based on your recommended daily caloric intake of{' '}
-            <span className="font-medium text-foreground">{Math.round(safeCalories)} kcal</span>,
-            here are some suggested Indian meal options:
-          </p>
-
-          <div className="space-y-4">
-            {mealPlan.meals.map((meal, index) => (
-              <MealCard key={index} meal={meal} />
-            ))}
-          </div>
-
-          <div className="mt-6 bg-secondary/50 rounded-xl p-4">
-            <p className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">Notes:</span>
-              <ul className="list-disc pl-5 space-y-1 mt-2">
-                <li>Adjust portion sizes based on your hunger levels and activity.</li>
-                <li>Stay hydrated by drinking 8-10 glasses of water daily.</li>
-                <li>These are sample recommendations. Consult a nutritionist for a personalized plan.</li>
-                <li>Include seasonal fruits and vegetables for better nutrition.</li>
-              </ul>
-            </p>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="ai" className="mt-0">
-          <AiMealPlanner />
-        </TabsContent>
-      </CardContent>
     </Card>
   );
 };
