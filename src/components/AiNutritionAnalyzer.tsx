@@ -1,7 +1,10 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { Sparkles, Pizza } from "lucide-react";
 
 interface NutritionData {
   dish: string;
@@ -51,37 +54,94 @@ const AiNutritionAnalyzer: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-lg mx-auto p-6 shadow-md">
+    <Card className="w-full h-full shadow-sm">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Nutrition Analyzer</CardTitle>
+        <CardTitle className="text-xl font-semibold flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-primary" />
+          AI Nutrition Analyzer
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="text-sm text-muted-foreground mb-4">
+          Enter a dish name and portion size to get AI-analyzed nutrition information.
+        </div>
         <Input
           type="text"
           placeholder="Enter dish name (e.g., Paneer Butter Masala)"
           value={dish}
           onChange={(e) => setDish(e.target.value)}
+          className="mb-2"
         />
         <Input
           type="text"
           placeholder="Enter portion size (e.g., 1 cup)"
           value={portion}
           onChange={(e) => setPortion(e.target.value)}
+          className="mb-4"
         />
         <Button onClick={analyzeNutrition} disabled={loading} className="w-full">
-          {loading ? "Analyzing..." : "Get Nutrition Info"}
+          {loading ? (
+            <>Analyzing...</>
+          ) : (
+            <>
+              <Sparkles className="mr-2 h-4 w-4" />
+              Get Nutrition Info
+            </>
+          )}
         </Button>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
         {nutrition && (
-          <div className="mt-4 p-4 bg-secondary/50 rounded-lg">
-            <h3 className="text-lg font-semibold">{nutrition.dish} - {nutrition.portion}</h3>
-            <p>🔥 Calories: <strong>{nutrition.calories} kcal</strong></p>
-            <p>💪 Protein: <strong>{nutrition.protein_g}g</strong></p>
-            <p>🍞 Carbs: <strong>{nutrition.carbs_g}g</strong></p>
-            <p>🥑 Fat: <strong>{nutrition.fat_g}g</strong></p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 p-4 bg-secondary/50 rounded-lg"
+          >
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Pizza className="h-5 w-5 text-primary" />
+              {nutrition.dish} - {nutrition.portion}
+            </h3>
+            <div className="grid grid-cols-2 gap-3 mt-3">
+              <div className="flex items-center gap-2 bg-background p-2 rounded-md">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-primary text-sm">🔥</span>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Calories</div>
+                  <div className="font-semibold">{nutrition.calories} kcal</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-background p-2 rounded-md">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-primary text-sm">💪</span>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Protein</div>
+                  <div className="font-semibold">{nutrition.protein_g}g</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-background p-2 rounded-md">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-primary text-sm">🍞</span>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Carbs</div>
+                  <div className="font-semibold">{nutrition.carbs_g}g</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-background p-2 rounded-md">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span className="text-primary text-sm">🥑</span>
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Fat</div>
+                  <div className="font-semibold">{nutrition.fat_g}g</div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         )}
       </CardContent>
     </Card>

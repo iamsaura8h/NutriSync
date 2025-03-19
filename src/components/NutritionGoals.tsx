@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,9 @@ import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
-import { Target, Plus, Minus } from 'lucide-react';
+import { Target, Plus, Minus, ListFilter, Sparkles } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import AiNutritionAnalyzer from './AiNutritionAnalyzer';
 
 interface NutritionGoal {
   daily_calories: number;
@@ -42,6 +43,7 @@ const NutritionGoals: React.FC = () => {
   const [goals, setGoals] = useState<NutritionGoal>(DEFAULT_GOALS);
   const [foodEntries, setFoodEntries] = useState<FoodEntry[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("manual");
   const [newFood, setNewFood] = useState({
     food_name: '',
     calories: '',
@@ -80,7 +82,6 @@ const NutritionGoals: React.FC = () => {
       if (data) {
         setGoals(data);
       } else {
-        // No goals set yet - use defaults
         setShowGoalDialog(true);
       }
     } catch (error: any) {
@@ -198,7 +199,6 @@ const NutritionGoals: React.FC = () => {
         description: `${newFood.food_name} has been added to your log!`,
       });
 
-      // Reset form
       setNewFood({
         food_name: '',
         calories: '',
@@ -252,7 +252,6 @@ const NutritionGoals: React.FC = () => {
     }
   };
 
-  // Calculate totals
   const totals = foodEntries.reduce((acc, entry) => {
     return {
       calories: acc.calories + entry.calories,
@@ -262,7 +261,6 @@ const NutritionGoals: React.FC = () => {
     };
   }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
 
-  // Calculate percentages for progress bars
   const percentages = {
     calories: Math.min(100, (totals.calories / goals.daily_calories) * 100),
     protein: Math.min(100, (totals.protein / goals.daily_protein) * 100),
@@ -272,7 +270,6 @@ const NutritionGoals: React.FC = () => {
 
   return (
     <>
-      {/* Nutrition Goals Dialog */}
       <Dialog open={showGoalDialog} onOpenChange={setShowGoalDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -336,127 +333,147 @@ const NutritionGoals: React.FC = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Add Food Dialog */}
       <Dialog open={showFoodDialog} onOpenChange={setShowFoodDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Add Food Item</DialogTitle>
           </DialogHeader>
           
-          <form onSubmit={handleAddFood} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="food_name">Food Name</Label>
-              <Input
-                id="food_name"
-                value={newFood.food_name}
-                onChange={(e) => setNewFood({...newFood, food_name: e.target.value})}
-                placeholder="e.g., Boiled Rice"
-                required
-              />
-            </div>
+          <Tabs defaultValue="manual" value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2 mb-4">
+              <TabsTrigger value="manual" className="flex items-center gap-1">
+                <ListFilter className="h-4 w-4" />
+                Manual Entry
+              </TabsTrigger>
+              <TabsTrigger value="ai" className="flex items-center gap-1">
+                <Sparkles className="h-4 w-4" />
+                AI Analyzer
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="manual">
+              <form onSubmit={handleAddFood} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="food_name">Food Name</Label>
+                  <Input
+                    id="food_name"
+                    value={newFood.food_name}
+                    onChange={(e) => setNewFood({...newFood, food_name: e.target.value})}
+                    placeholder="e.g., Boiled Rice"
+                    required
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="meal_type">Meal Type</Label>
-              <select 
-                id="meal_type"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                value={newFood.meal_type}
-                onChange={(e) => setNewFood({...newFood, meal_type: e.target.value})}
-              >
-                <option value="breakfast">Breakfast</option>
-                <option value="lunch">Lunch</option>
-                <option value="dinner">Dinner</option>
-                <option value="snack">Snack</option>
-              </select>
-            </div>
+                <div className="space-y-2">
+                  <Label htmlFor="meal_type">Meal Type</Label>
+                  <select 
+                    id="meal_type"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    value={newFood.meal_type}
+                    onChange={(e) => setNewFood({...newFood, meal_type: e.target.value})}
+                  >
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                    <option value="snack">Snack</option>
+                  </select>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="portion_size">Portion Size</Label>
+                    <Input
+                      id="portion_size"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      value={newFood.portion_size}
+                      onChange={(e) => setNewFood({...newFood, portion_size: e.target.value})}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="portion_unit">Unit</Label>
+                    <Input
+                      id="portion_unit"
+                      value={newFood.portion_unit}
+                      onChange={(e) => setNewFood({...newFood, portion_unit: e.target.value})}
+                      placeholder="e.g., g, cup, piece"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="calories">Calories (kcal)</Label>
+                    <Input
+                      id="calories"
+                      type="number"
+                      min="0"
+                      value={newFood.calories}
+                      onChange={(e) => setNewFood({...newFood, calories: e.target.value})}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="protein">Protein (g)</Label>
+                    <Input
+                      id="protein"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      value={newFood.protein}
+                      onChange={(e) => setNewFood({...newFood, protein: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="carbs">Carbs (g)</Label>
+                    <Input
+                      id="carbs"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      value={newFood.carbs}
+                      onChange={(e) => setNewFood({...newFood, carbs: e.target.value})}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="fat">Fat (g)</Label>
+                    <Input
+                      id="fat"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      value={newFood.fat}
+                      onChange={(e) => setNewFood({...newFood, fat: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <DialogFooter>
+                  <Button type="submit" disabled={isLoading}>
+                    {isLoading ? 'Adding...' : 'Add Food'}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </TabsContent>
             
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="portion_size">Portion Size</Label>
-                <Input
-                  id="portion_size"
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  value={newFood.portion_size}
-                  onChange={(e) => setNewFood({...newFood, portion_size: e.target.value})}
-                  required
-                />
+            <TabsContent value="ai" className="h-[400px] overflow-y-auto">
+              <div className="p-1">
+                <AiNutritionAnalyzer />
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="portion_unit">Unit</Label>
-                <Input
-                  id="portion_unit"
-                  value={newFood.portion_unit}
-                  onChange={(e) => setNewFood({...newFood, portion_unit: e.target.value})}
-                  placeholder="e.g., g, cup, piece"
-                  required
-                />
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="calories">Calories (kcal)</Label>
-                <Input
-                  id="calories"
-                  type="number"
-                  min="0"
-                  value={newFood.calories}
-                  onChange={(e) => setNewFood({...newFood, calories: e.target.value})}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="protein">Protein (g)</Label>
-                <Input
-                  id="protein"
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  value={newFood.protein}
-                  onChange={(e) => setNewFood({...newFood, protein: e.target.value})}
-                  required
-                />
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="carbs">Carbs (g)</Label>
-                <Input
-                  id="carbs"
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  value={newFood.carbs}
-                  onChange={(e) => setNewFood({...newFood, carbs: e.target.value})}
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="fat">Fat (g)</Label>
-                <Input
-                  id="fat"
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  value={newFood.fat}
-                  onChange={(e) => setNewFood({...newFood, fat: e.target.value})}
-                  required
-                />
-              </div>
-            </div>
-            
-            <DialogFooter>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Adding...' : 'Add Food'}
-              </Button>
-            </DialogFooter>
-          </form>
+            </TabsContent>
+          </Tabs>
         </DialogContent>
       </Dialog>
 
@@ -487,7 +504,6 @@ const NutritionGoals: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {/* Calories */}
             <div className="space-y-1">
               <div className="flex justify-between text-sm">
                 <span>Calories</span>
@@ -496,7 +512,6 @@ const NutritionGoals: React.FC = () => {
               <Progress value={percentages.calories} className="h-2" />
             </div>
             
-            {/* Protein */}
             <div className="space-y-1">
               <div className="flex justify-between text-sm">
                 <span>Protein</span>
@@ -505,7 +520,6 @@ const NutritionGoals: React.FC = () => {
               <Progress value={percentages.protein} className="h-2" />
             </div>
             
-            {/* Carbs */}
             <div className="space-y-1">
               <div className="flex justify-between text-sm">
                 <span>Carbs</span>
@@ -514,7 +528,6 @@ const NutritionGoals: React.FC = () => {
               <Progress value={percentages.carbs} className="h-2" />
             </div>
             
-            {/* Fat */}
             <div className="space-y-1">
               <div className="flex justify-between text-sm">
                 <span>Fat</span>
@@ -524,7 +537,6 @@ const NutritionGoals: React.FC = () => {
             </div>
           </div>
 
-          {/* Food Entries List */}
           <div className="mt-6 border-t pt-4">
             <h3 className="text-sm font-medium mb-2">Today's Food Entries</h3>
             

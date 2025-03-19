@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Carrot, Coffee, Salad, Utensils, Sun, Moon } from 'lucide-react';
+import { Carrot, Coffee, Salad, Utensils, Sun, Moon, ListFilter, Sparkles } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import AiMealPlanner from './AiMealPlanner';
 
 type Goal = 'loss' | 'maintenance' | 'gain';
 
@@ -12,6 +15,8 @@ interface MealRecommendationsProps {
 }
 
 const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories = 2000, goal = 'maintenance' }) => {
+  const [activeTab, setActiveTab] = useState<string>("standard");
+
   useEffect(() => {
     console.log('MealRecommendations props:', { calories, goal });
   }, [calories, goal]);
@@ -208,39 +213,56 @@ const MealRecommendations: React.FC<MealRecommendationsProps> = ({ calories = 20
   return (
     <Card className="w-full h-full">
       <CardHeader className="pb-4">
-        <CardTitle className="text-xl flex items-center gap-2">
-          <Utensils className="h-5 w-5 text-primary" />
-          {mealPlan.title}
-        </CardTitle>
-        <CardDescription>
-          {mealPlan.description}
-        </CardDescription>
+        <div className="flex justify-between items-center">
+          <CardTitle className="text-xl flex items-center gap-2">
+            <Utensils className="h-5 w-5 text-primary" />
+            Meal Planner
+          </CardTitle>
+        </div>
+        <Tabs defaultValue="standard" value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-2 mt-3">
+            <TabsTrigger value="standard" className="flex items-center gap-1">
+              <ListFilter className="h-4 w-4" />
+              Standard
+            </TabsTrigger>
+            <TabsTrigger value="ai" className="flex items-center gap-1">
+              <Sparkles className="h-4 w-4" />
+              AI Powered
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </CardHeader>
       
       <CardContent>
-        <p className="text-muted-foreground mb-6">
-          Based on your recommended daily caloric intake of{' '}
-          <span className="font-medium text-foreground">{Math.round(safeCalories)} kcal</span>,
-          here are some suggested Indian meal options:
-        </p>
-
-        <div className="space-y-4">
-          {mealPlan.meals.map((meal, index) => (
-            <MealCard key={index} meal={meal} />
-          ))}
-        </div>
-
-        <div className="mt-6 bg-secondary/50 rounded-xl p-4">
-          <p className="text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">Notes:</span>
-            <ul className="list-disc pl-5 space-y-1 mt-2">
-              <li>Adjust portion sizes based on your hunger levels and activity.</li>
-              <li>Stay hydrated by drinking 8-10 glasses of water daily.</li>
-              <li>These are sample recommendations. Consult a nutritionist for a personalized plan.</li>
-              <li>Include seasonal fruits and vegetables for better nutrition.</li>
-            </ul>
+        <TabsContent value="standard" className="mt-0">
+          <p className="text-muted-foreground mb-6">
+            Based on your recommended daily caloric intake of{' '}
+            <span className="font-medium text-foreground">{Math.round(safeCalories)} kcal</span>,
+            here are some suggested Indian meal options:
           </p>
-        </div>
+
+          <div className="space-y-4">
+            {mealPlan.meals.map((meal, index) => (
+              <MealCard key={index} meal={meal} />
+            ))}
+          </div>
+
+          <div className="mt-6 bg-secondary/50 rounded-xl p-4">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">Notes:</span>
+              <ul className="list-disc pl-5 space-y-1 mt-2">
+                <li>Adjust portion sizes based on your hunger levels and activity.</li>
+                <li>Stay hydrated by drinking 8-10 glasses of water daily.</li>
+                <li>These are sample recommendations. Consult a nutritionist for a personalized plan.</li>
+                <li>Include seasonal fruits and vegetables for better nutrition.</li>
+              </ul>
+            </p>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="ai" className="mt-0">
+          <AiMealPlanner />
+        </TabsContent>
       </CardContent>
     </Card>
   );

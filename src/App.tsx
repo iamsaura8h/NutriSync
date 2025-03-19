@@ -16,8 +16,6 @@ import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AiNutriScan from "./pages/AiNutriScan";
 import HowToUse from "./pages/HowToUse";
-import AiNutritionAnalyzer from "./components/AiNutritionAnalyzer";
-import AiMealPlanner from "./components/AiMealPlanner";
 
 const queryClient = new QueryClient();
 
@@ -30,7 +28,6 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/test" element={<AiMealPlanner />} />
               <Route path="/" element={<Index />} />
               <Route path="/aiScan" element={<AiNutriScan />} />
               <Route path="/how-to-use" element={<HowToUse />} />

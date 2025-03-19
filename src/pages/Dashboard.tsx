@@ -12,7 +12,6 @@ import MealRecommendations from '@/components/MealRecommendations';
 import WelcomeMessage from '@/components/WelcomeMessage';
 import { useHealth } from '@/contexts/HealthContext';
 import { Gender, ActivityLevel, Goal } from '@/utils/calculations';
-import AiMealRecommendations from '@/components/AiMealPlanner';
 
 const Dashboard: React.FC = () => {
   const { user, loading } = useAuth();
@@ -56,6 +55,12 @@ const Dashboard: React.FC = () => {
   // Make sure we have a valid goal string
   const goalType = healthData?.goal === Goal.WEIGHT_LOSS ? 'loss' :
                  healthData?.goal === Goal.WEIGHT_GAIN ? 'gain' : 'maintenance';
+
+  console.log("Dashboard rendering with health data:", { 
+    calorieNeeds, 
+    goalType, 
+    rawGoal: healthData?.goal 
+  });
 
   return (
     <Layout>
