@@ -10,7 +10,7 @@ const app = express();
 const upload = multer({ dest: "uploads/" });
 
 const corsOptions = {
-  origin: ["http://localhost:8080", "https://your-frontend.vercel.app"], // Allow only your frontend
+  origin: ["http://localhost:8080", "https://nutrisync-git-deployment-saurabh-s-projects-86334882.vercel.app"], // Allow only your frontend
   methods: "GET,POST",
   allowedHeaders: "Content-Type,Authorization",
 };
