@@ -8,7 +8,14 @@ import cors from "cors"; // Import CORS
 dotenv.config();
 const app = express();
 const upload = multer({ dest: "uploads/" });
-app.use(cors());
+
+const corsOptions = {
+  origin: ["http://localhost:8080", "https://your-frontend.vercel.app"], // Allow only your frontend
+  methods: "GET,POST",
+  allowedHeaders: "Content-Type,Authorization",
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.get("/", async (req, res) => {
