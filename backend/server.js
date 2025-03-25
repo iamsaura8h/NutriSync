@@ -21,7 +21,8 @@ app.post("/analyze", upload.single("dishImage"), async (req, res) => {
     const imagePath = req.file.path;
     const imageData = fs.readFileSync(imagePath).toString("base64");
 
-    const response = await axios.post(
+    // Step 1: Check if the image is food
+    const foodCheckResponse = await axios.post(
       `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         contents: [
@@ -40,44 +41,60 @@ app.post("/analyze", upload.single("dishImage"), async (req, res) => {
             role: "user",
             parts: [
               {
-                text: `You are a food nutrition expert. Identify the dish in the given image and provide an estimated nutritional breakdown per 100 grams. The dish is most likely Indian, but it may also belong to other cuisines. If the dish is a curry but unclear, identify the primary vegetable or ingredient and name it as "BlaBla ki Sabzi" or "BlaBla Curry."
+                text: `Analyze the image and answer only with "yes" or "no". Is this image food?`
+              }
+            ],
+          },
+        ],
+      }
+    );
 
-Return the following details in JSON format:
+    const isFood =
+      foodCheckResponse.data?.candidates?.[0]?.content?.parts?.[0]?.text
+        .toLowerCase()
+        .includes("yes");
+
+    if (!isFood) {
+      fs.unlinkSync(imagePath);
+      return res.json({ error: "This image does not contain food. Please upload a valid dish image." });
+    }
+
+    // Step 2: Get nutrition details if it's food
+    const nutritionResponse = await axios.post(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                inlineData: {
+                  mimeType: "image/jpeg",
+                  data: imageData,
+                },
+              },
+            ],
+          },
+          {
+            role: "user",
+            parts: [
+              {
+                text: `You are a food nutrition expert. Identify the dish in the given image and provide an estimated nutritional breakdown per 100 grams. If the dish is unclear, return "Unknown Food". Format response strictly as JSON:
 
 {
   "dish": "Dish Name",
-  "calories_per_100g": "XXX-XXX kcal",
-  "protein_per_100g": "XX-XX g",
-  "carbs_per_100g": "XX-XX g",
-  "fat_per_100g": "XX-XX g",
-  "fiber_per_100g": "XX-XX g",
-  "sugar_per_100g": "XX-XX g",
-  "cholesterol_per_100g": "XX-XX g",
-  "sodium_per_100g": "XX-XX g",
-  "vitamin_b3_per_100g": "XX-XX g",
-  "vitamin_c_per_100g": "XX-XX g",
-  "manganese_per_100g": "XX-XX g",
-  "folate_per_100g": "XX-XX g",
-  "vitamin_b6_per_100g": "XX-XX g",
-  "vitamin_b12_per_100g": "XX-XX g",
-  "potassium_per_100g": "XX-XX g",
-  "phosphorus_per_100g": "XX-XX g",
-  "iron_per_100g": "XX-XX g",
-  "vitamin_k_per_100g": "XX-XX g",
-  "zinc_per_100g": "XX-XX g",
-  "selenium_per_100g": "XX-XX g",
-  "vitamin_e_per_100g": "XX-XX g",
-  "magnesium_per_100g": "XX-XX g",
-  "copper_per_100g": "XX-XX g",
-  "vitamin_b1_per_100g": "XX-XX g",
-  "vitamin_b2_per_100g": "XX-XX g",
-  "vitamin_b5_per_100g": "XX-XX g",
-  "calcium_per_100g": "XX-XX g",
-  "vitamin_a_per_100g": "XX-XX g"
+  "calories_per_100g": "XXX kcal",
+  "protein_per_100g": "XX g",
+  "carbs_per_100g": "XX g",
+  "fat_per_100g": "XX g",
+  "sugar_per_100g": "XX g",
+  "fiber_per_100g": "XX g",
+  "sodium_per_100g": "XX mg",
+  "calcium_per_100g": "XX mg",
+  "iron_per_100g": "XX mg"
 }
 
-Ensure all values are estimated ranges based on common nutritional data. Keep responses concise and accurate.
-`,
+Ensure values are estimated ranges based on common nutritional data.`
               },
             ],
           },
@@ -85,17 +102,24 @@ Ensure all values are estimated ranges based on common nutritional data. Keep re
       }
     );
 
-    fs.unlinkSync(imagePath); // Delete uploaded image after processing
+    fs.unlinkSync(imagePath);
 
-    // Extract and clean up JSON response
+    // Extract and clean JSON response
     const geminiResponse =
-      response.data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+      nutritionResponse.data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
+
     const jsonStart = geminiResponse.indexOf("{");
     const jsonEnd = geminiResponse.lastIndexOf("}");
     const cleanJson = geminiResponse.substring(jsonStart, jsonEnd + 1);
 
-    const parsedData = JSON.parse(cleanJson); // Parse extracted JSON
-    res.json(parsedData); // Send clean JSON response
+    const parsedData = JSON.parse(cleanJson);
+
+    // If dish is "Unknown Food", return an error message
+    if (parsedData.dish.toLowerCase().includes("unknown food")) {
+      return res.json({ error: "Could not identify the dish. Please upload a clearer food image." });
+    }
+
+    res.json(parsedData);
   } catch (error) {
     console.error(
       "Error from Gemini API:",
@@ -104,7 +128,6 @@ Ensure all values are estimated ranges based on common nutritional data. Keep re
     res.status(500).json({ error: "Failed to analyze image" });
   }
 });
-
 // AI Nutrion Finder
 app.post("/analyze-nutrition", async (req, res) => {
   try {

@@ -32,7 +32,8 @@ const AiMealPlanner: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:5000/generate-meal-plan", {
+      console.log("API BASE URL:", import.meta.env.VITE_API_BASE_URL);
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/generate-meal-plan`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ingredients, cuisine, mealType, targetCalories }),

@@ -41,7 +41,7 @@ const AiNutritionAnalyzer = () => {
     setAdded(false);
 
     try {
-      const response = await fetch("http://localhost:5000/analyze-nutrition", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/analyze-nutrition`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ dish: description, portion: "1 serving" }),

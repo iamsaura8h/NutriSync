@@ -4,43 +4,47 @@ import { Loader2, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function AiNutriScan() {
-    const [image, setImage] = useState(null);
-    const [result, setResult] = useState(null);
+    const [image, setImage] = useState<string | null>(null);
+    const [result, setResult] = useState<any>(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleUpload = async (e) => {
-        const file = e.target.files[0];
+    const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
         if (!file) return;
 
         setImage(URL.createObjectURL(file));
-        setLoading(true);
+        setResult(null);
         setError(null);
+        setLoading(true);
 
         const formData = new FormData();
         formData.append("dishImage", file);
 
         try {
-            const res = await fetch("http://localhost:5000/analyze", {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/analyze`, {
                 method: "POST",
                 body: formData
             });
 
-            if (!res.ok) {
-                throw new Error("Failed to analyze image");
-            }
+            if (!res.ok) throw new Error("Failed to analyze image");
 
             const data = await res.json();
-            setResult(data);
-        } catch (err) {
-            setError(err.message);
+
+            if (data.error) {
+                setError(data.error); // Display error message from backend
+            } else {
+                setResult(data);
+            }
+        } catch (err: any) {
+            setError(err.message || "An error occurred while analyzing the image");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className=" bg-background flex flex-col items-center p-6">
+        <div className="bg-background flex flex-col items-center p-6">
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -63,7 +67,7 @@ export default function AiNutriScan() {
                             AI Powered
                         </div>
                     </div>
-                    
+
                     <div className="flex flex-col items-center border-2 border-dashed border-primary/30 rounded-xl p-6 bg-secondary/20 mb-4">
                         <input 
                             type="file" 
@@ -101,7 +105,9 @@ export default function AiNutriScan() {
                             transition={{ duration: 0.3 }}
                             className="mt-6 p-4 bg-secondary/30 rounded-lg"
                         >
-                            <h2 className="text-xl font-semibold text-foreground text-center mb-4">Dish: {result.dish}</h2>
+                            <h2 className="text-xl font-semibold text-foreground text-center mb-4">
+                                Dish: {result.dish}
+                            </h2>
                             
                             <div className="grid grid-cols-2 gap-3 mb-4">
                                 <div className="p-3 bg-background rounded-lg">
@@ -127,79 +133,17 @@ export default function AiNutriScan() {
                                 <h3 className="font-bold mb-3 text-foreground">Additional Nutrients (per 100g)</h3>
                                 <div className="grid grid-cols-2 gap-2 text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Carbohydrates:</span>
-                                        <span className="font-medium">{result.carbs_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
                                         <span className="text-muted-foreground">Sugar:</span>
                                         <span className="font-medium">{result.sugar_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Cholesterol:</span>
-                                        <span className="font-medium">{result.cholesterol_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Sodium:</span>
-                                        <span className="font-medium">{result.sodium_per_100g}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">Fiber:</span>
                                         <span className="font-medium">{result.fiber_per_100g}</span>
                                     </div>
-                                </div>
-                            </div>
-
-                            {/* Vitamins */}
-                            <div className="border-t border-border pt-4 mt-4">
-                                <h3 className="font-bold mb-3 text-foreground">Vitamins (per 100g)</h3>
-                                <div className="grid grid-cols-2 gap-2 text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Vitamin A:</span>
-                                        <span className="font-medium">{result.vitamin_a_per_100g}</span>
+                                        <span className="text-muted-foreground">Sodium:</span>
+                                        <span className="font-medium">{result.sodium_per_100g}</span>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Vitamin B1:</span>
-                                        <span className="font-medium">{result.vitamin_b1_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Vitamin B2:</span>
-                                        <span className="font-medium">{result.vitamin_b2_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Vitamin B3:</span>
-                                        <span className="font-medium">{result.vitamin_b3_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Vitamin B5:</span>
-                                        <span className="font-medium">{result.vitamin_b5_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Vitamin B6:</span>
-                                        <span className="font-medium">{result.vitamin_b6_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Vitamin B12:</span>
-                                        <span className="font-medium">{result.vitamin_b12_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Vitamin C:</span>
-                                        <span className="font-medium">{result.vitamin_c_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Vitamin E:</span>
-                                        <span className="font-medium">{result.vitamin_e_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Vitamin K:</span>
-                                        <span className="font-medium">{result.vitamin_k_per_100g}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Minerals */}
-                            <div className="border-t border-border pt-4 mt-4">
-                                <h3 className="font-bold mb-3 text-foreground">Minerals (per 100g)</h3>
-                                <div className="grid grid-cols-2 gap-2 text-sm">
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">Calcium:</span>
                                         <span className="font-medium">{result.calcium_per_100g}</span>
@@ -207,38 +151,6 @@ export default function AiNutriScan() {
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">Iron:</span>
                                         <span className="font-medium">{result.iron_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Magnesium:</span>
-                                        <span className="font-medium">{result.magnesium_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Phosphorus:</span>
-                                        <span className="font-medium">{result.phosphorus_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Potassium:</span>
-                                        <span className="font-medium">{result.potassium_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Selenium:</span>
-                                        <span className="font-medium">{result.selenium_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Zinc:</span>
-                                        <span className="font-medium">{result.zinc_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Copper:</span>
-                                        <span className="font-medium">{result.copper_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Manganese:</span>
-                                        <span className="font-medium">{result.manganese_per_100g}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Folate:</span>
-                                        <span className="font-medium">{result.folate_per_100g}</span>
                                     </div>
                                 </div>
                             </div>
