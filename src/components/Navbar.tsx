@@ -33,7 +33,9 @@ const Navbar: React.FC = () => {
     >
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
+         
+          <Link to="/" className="flex items-center space-x-1">
+            <img src="favicon.ico" alt="logo" className='h-8 w-8 ' />
             <span className="font-bold text-xl">NutriSync</span>
           </Link>
 
