@@ -30,7 +30,7 @@ app.post("/analyze", upload.single("dishImage"), async (req, res) => {
 
     // Step 1: Check if the image is food
     const foodCheckResponse = await axios.post(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         contents: [
           {
@@ -68,7 +68,7 @@ app.post("/analyze", upload.single("dishImage"), async (req, res) => {
 
     // Step 2: Get nutrition details if it's food
     const nutritionResponse = await axios.post(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         contents: [
           {
