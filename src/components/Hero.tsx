@@ -79,7 +79,7 @@ const Hero: React.FC = () => {
                   loop
                   muted
                   playsInline
-                  className="w-full h-full object-cover"
+                  className="w-full h-80 object-fill"
                 />
               </div>
             </motion.div>
