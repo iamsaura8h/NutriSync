@@ -72,43 +72,15 @@ const Hero: React.FC = () => {
               className="relative mx-auto max-w-md"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-primary/10 rounded-3xl blur-3xl transform -rotate-6 scale-105" />
-              <div className="relative glass-card rounded-3xl overflow-hidden p-6 shadow-xl">
-                <div className="space-y-8">
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-lg font-medium">Your Metrics</h3>
-                      <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse-soft" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-background rounded-xl p-4">
-                        <div className="text-sm text-muted-foreground">BMI</div>
-                        <div className="text-2xl font-bold">22.5</div>
-                        <div className="text-xs text-green-500 mt-1">Normal</div>
-                      </div>
-                      <div className="bg-background rounded-xl p-4">
-                        <div className="text-sm text-muted-foreground">BMR</div>
-                        <div className="text-2xl font-bold">1,875</div>
-                        <div className="text-xs text-muted-foreground mt-1">kcal/day</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-medium">Daily Calories</h3>
-                    <div className="bg-background rounded-xl p-4">
-                      <div className="flex justify-between">
-                        <div>
-                          <div className="text-sm text-muted-foreground">Recommended</div>
-                          <div className="text-2xl font-bold">2,250</div>
-                          <div className="text-xs text-muted-foreground mt-1">kcal/day</div>
-                        </div>
-                        <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-                          <div className="text-primary font-medium">TDEE</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div className="relative glass-card rounded-3xl overflow-hidden shadow-xl">
+                <video
+                  src="/nutriScan-demo.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
               </div>
             </motion.div>
           </div>
