@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from 'framer-motion';
-import { Loader2, Info } from 'lucide-react';
+import { Loader2, Info, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function AiNutriScan() {
@@ -68,13 +68,24 @@ export default function AiNutriScan() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col items-center border-2 border-dashed border-primary/30 rounded-xl p-6 bg-secondary/20 mb-4">
+                    <div className="flex flex-col items-center border-2 border-dashed border-primary/30 rounded-xl p-6 bg-secondary/20 mb-4 hover:border-primary/50 transition-colors">
                         <input 
                             type="file" 
+                            id="food-upload"
                             accept="image/*"
                             onChange={handleUpload} 
-                            className="w-full cursor-pointer"
+                            className="hidden"
                         />
+                        <label 
+                            htmlFor="food-upload" 
+                            className="cursor-pointer flex flex-col items-center w-full"
+                        >
+                            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mb-3 hover:bg-primary/20 transition-colors">
+                                <Upload className="h-8 w-8 text-primary" />
+                            </div>
+                            <p className="text-primary font-medium mb-1">Upload Food Image</p>
+                            <p className="text-muted-foreground text-sm">Click to select a file</p>
+                        </label>
                         {image && (
                             <img 
                                 src={image} 
@@ -103,54 +114,61 @@ export default function AiNutriScan() {
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3 }}
-                            className="mt-6 p-4 bg-secondary/30 rounded-lg"
+                            className="mt-6 p-6 bg-secondary/30 rounded-lg"
                         >
-                            <h2 className="text-xl font-semibold text-foreground text-center mb-4">
+                            <h2 className="text-xl font-semibold text-foreground mb-6">
                                 Dish: {result.dish}
                             </h2>
                             
-                            <div className="grid grid-cols-2 gap-3 mb-4">
-                                <div className="p-3 bg-background rounded-lg">
-                                    <p className="text-sm text-muted-foreground">Calories (per 100g)</p>
-                                    <p className="font-medium">{result.calories_per_100g}</p>
-                                </div>
-                                <div className="p-3 bg-background rounded-lg">
-                                    <p className="text-sm text-muted-foreground">Protein</p>
-                                    <p className="font-medium">{result.protein_per_100g}</p>
-                                </div>
-                                <div className="p-3 bg-background rounded-lg">
-                                    <p className="text-sm text-muted-foreground">Carbs</p>
-                                    <p className="font-medium">{result.carbs_per_100g}</p>
-                                </div>
-                                <div className="p-3 bg-background rounded-lg">
-                                    <p className="text-sm text-muted-foreground">Fat</p>
-                                    <p className="font-medium">{result.fat_per_100g}</p>
+                            {/* Main Nutrients - Responsive Layout */}
+                            <div className="flex flex-col md:flex-row md:gap-4 mb-6">
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 flex-1">
+                                    <div className="p-4 bg-background rounded-lg text-center transition-all hover:shadow-md">
+                                        <p className="text-xs text-muted-foreground mb-1">Calories</p>
+                                        <p className="text-lg font-bold text-primary">{result.calories_per_100g}</p>
+                                        <p className="text-xs text-muted-foreground">per 100g</p>
+                                    </div>
+                                    <div className="p-4 bg-background rounded-lg text-center transition-all hover:shadow-md">
+                                        <p className="text-xs text-muted-foreground mb-1">Protein</p>
+                                        <p className="text-lg font-bold text-primary">{result.protein_per_100g}</p>
+                                        <p className="text-xs text-muted-foreground">per 100g</p>
+                                    </div>
+                                    <div className="p-4 bg-background rounded-lg text-center transition-all hover:shadow-md">
+                                        <p className="text-xs text-muted-foreground mb-1">Carbs</p>
+                                        <p className="text-lg font-bold text-primary">{result.carbs_per_100g}</p>
+                                        <p className="text-xs text-muted-foreground">per 100g</p>
+                                    </div>
+                                    <div className="p-4 bg-background rounded-lg text-center transition-all hover:shadow-md">
+                                        <p className="text-xs text-muted-foreground mb-1">Fat</p>
+                                        <p className="text-lg font-bold text-primary">{result.fat_per_100g}</p>
+                                        <p className="text-xs text-muted-foreground">per 100g</p>
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Additional Nutrients */}
-                            <div className="border-t border-border pt-4 mt-4">
-                                <h3 className="font-bold mb-3 text-foreground">Additional Nutrients (per 100g)</h3>
-                                <div className="grid grid-cols-2 gap-2 text-sm">
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Sugar:</span>
-                                        <span className="font-medium">{result.sugar_per_100g}</span>
+                            <div className="border-t border-border pt-4">
+                                <h3 className="font-semibold mb-3 text-foreground">Additional Nutrients</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                                    <div className="p-3 bg-background rounded-lg text-center">
+                                        <p className="text-xs text-muted-foreground mb-1">Sugar</p>
+                                        <p className="font-medium text-sm">{result.sugar_per_100g}</p>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Fiber:</span>
-                                        <span className="font-medium">{result.fiber_per_100g}</span>
+                                    <div className="p-3 bg-background rounded-lg text-center">
+                                        <p className="text-xs text-muted-foreground mb-1">Fiber</p>
+                                        <p className="font-medium text-sm">{result.fiber_per_100g}</p>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Sodium:</span>
-                                        <span className="font-medium">{result.sodium_per_100g}</span>
+                                    <div className="p-3 bg-background rounded-lg text-center">
+                                        <p className="text-xs text-muted-foreground mb-1">Sodium</p>
+                                        <p className="font-medium text-sm">{result.sodium_per_100g}</p>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Calcium:</span>
-                                        <span className="font-medium">{result.calcium_per_100g}</span>
+                                    <div className="p-3 bg-background rounded-lg text-center">
+                                        <p className="text-xs text-muted-foreground mb-1">Calcium</p>
+                                        <p className="font-medium text-sm">{result.calcium_per_100g}</p>
                                     </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Iron:</span>
-                                        <span className="font-medium">{result.iron_per_100g}</span>
+                                    <div className="p-3 bg-background rounded-lg text-center">
+                                        <p className="text-xs text-muted-foreground mb-1">Iron</p>
+                                        <p className="font-medium text-sm">{result.iron_per_100g}</p>
                                     </div>
                                 </div>
                             </div>
